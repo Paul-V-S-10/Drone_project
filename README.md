@@ -4,7 +4,7 @@ This repository contains the setup guide and configuration for a modern ArduPilo
 
 This guide is specifically tailored for **Ubuntu 24.04 LTS**, which requires strict Python virtual environments and relies on the modern Gazebo architecture (formerly Ignition) rather than the deprecated Gazebo Classic (Gazebo 9/11).
 
-## 📋 System Architecture
+## System Architecture
 * **OS:** Ubuntu 24.04 LTS
 * **Workspace:** `~/drone_project/` *(You can rename this, but update the paths below accordingly)*
 * **Simulator:** Gazebo Harmonic
@@ -12,7 +12,7 @@ This guide is specifically tailored for **Ubuntu 24.04 LTS**, which requires str
 
 ---
 
-## 🚀 Phase 1: Core Framework Installation
+## Phase 1: Core Framework Installation
 
 ### 1. Install ArduPilot Source Code
 Clone the main flight controller software and install its base system dependencies.
