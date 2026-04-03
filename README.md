@@ -59,7 +59,8 @@ make -j4
 ### 1. Configure Paths & Aliases
 Map out where the files live and create a global shortcut to easily activate your Python environment from anywhere.
 ```bash
-nano ~/.bashrc
+sudo apt install -y gedit
+gedit ~/.bashrc
 ```
 Add these lines to the very bottom of the file:
 
