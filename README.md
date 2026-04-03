@@ -1,51 +1,86 @@
-# ==============================================================================
-# ARDUPILOT & GAZEBO SITL AUTOMATED SETUP SCRIPT (UBUNTU 24.04)
-# ==============================================================================
+# ArduPilot & Gazebo SITL Environment (Ubuntu 24.04)
 
-# 1. Create workspace and clone the core ArduPilot repository
-mkdir -p ~/drone_project
-cd ~/drone_project
-git clone --recurse-submodules https://github.com/Ardupilot/ardupilot.git
+This repository contains the setup guide and configuration for a modern ArduPilot Software-In-The-Loop (SITL) simulation environment integrated with Gazebo Harmonic. 
 
-# 2. Install base ArduPilot system prerequisites
+This guide is specifically tailored for **Ubuntu 24.04 LTS**, which requires strict Python virtual environments and relies on the modern Gazebo architecture (formerly Ignition) rather than the deprecated Gazebo Classic (Gazebo 9/11).
+
+## 📋 System Architecture
+* **OS:** Ubuntu 24.04 LTS
+* **Workspace:** `~/drone_project/` *(You can rename this, but update the paths below accordingly)*
+* **Simulator:** Gazebo Harmonic
+* **Python Environment:** `drone_env` (Virtual Environment)
+
+---
+
+## 🚀 Phase 1: Core Framework Installation
+
+### 1. Install ArduPilot Source Code
+Clone the main flight controller software and install its base system dependencies.
+
+```bash
+mkdir ~/drone_project && cd ~/drone_project
+git clone --recurse-submodules [https://github.com/Ardupilot/ardupilot.git](https://github.com/Ardupilot/ardupilot.git)
 cd ardupilot
 Tools/environment_install/install-prereqs-ubuntu.sh -y
 
-# 3. Add modern OSRF keys and install Gazebo Harmonic
 sudo apt update
-sudo apt install -y curl lsb-release gnupg
-sudo curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+sudo apt install curl lsb-release gnupg
+sudo curl [https://packages.osrfoundation.org/gazebo.gpg](https://packages.osrfoundation.org/gazebo.gpg) --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] [http://packages.osrfoundation.org/gazebo/ubuntu-stable](http://packages.osrfoundation.org/gazebo/ubuntu-stable) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 sudo apt update
-sudo apt install -y gz-harmonic
+sudo apt install gz-harmonic
 
-# 4. Install C++ development dependencies for the Gazebo plugin
-sudo apt install -y libgz-sim8-dev rapidjson-dev libopencv-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl
 
-# 5. Clone and compile the official ArduPilot-Gazebo communications bridge
+# Install development dependencies
+sudo apt install libgz-sim8-dev rapidjson-dev libopencv-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl
+
+# Clone and build the plugin
 cd ~/drone_project
-git clone https://github.com/ArduPilot/ardupilot_gazebo
+git clone [https://github.com/ArduPilot/ardupilot_gazebo](https://github.com/ArduPilot/ardupilot_gazebo)
 cd ardupilot_gazebo
 export GZ_VERSION=harmonic
-mkdir -p build && cd build
+mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
 make -j4
 
-# 6. Inject environment variables and global aliases into .bashrc
-echo '' >> ~/.bashrc
-echo '# ArduPilot SITL & Gazebo Configuration' >> ~/.bashrc
-echo 'export PATH=$PATH:$HOME/drone_project/ardupilot/Tools/autotest' >> ~/.bashrc
-echo 'export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/drone_project/ardupilot_gazebo/build:${GZ_SIM_SYSTEM_PLUGIN_PATH}' >> ~/.bashrc
-echo 'export GZ_SIM_RESOURCE_PATH=$HOME/drone_project/ardupilot_gazebo/models:$HOME/drone_project/ardupilot_gazebo/worlds:${GZ_SIM_RESOURCE_PATH}' >> ~/.bashrc
-echo "alias flydrone='source ~/drone_project/drone_env/bin/activate'" >> ~/.bashrc
 
-# 7. Activate virtual environment and install simulation Python packages
-# Note: We use the absolute path here because the 'flydrone' alias requires a terminal restart to take effect
-source ~/drone_project/drone_env/bin/activate
+
+
+nano ~/.bashrc
+
+
+
+# ArduPilot SITL Path
+export PATH=$PATH:$HOME/drone_project/ardupilot/Tools/autotest
+
+# Gazebo Plugin & Models Paths
+export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/drone_project/ardupilot_gazebo/build:${GZ_SIM_SYSTEM_PLUGIN_PATH}
+export GZ_SIM_RESOURCE_PATH=$HOME/drone_project/ardupilot_gazebo/models:$HOME/drone_project/ardupilot_gazebo/worlds:${GZ_SIM_RESOURCE_PATH}
+
+# Global alias to activate the Python environment
+alias flydrone='source ~/drone_project/drone_env/bin/activate'
+
+
+
+
+source ~/.bashrc
+
+
+
+
+flydrone
 pip install empy==3.3.4 pexpect future MAVProxy pymavlink wxPython matplotlib opencv-python numpy
 
-# 8. Completion Message
-echo "=============================================================================="
-echo "INSTALLATION COMPLETE!"
-echo "Please completely close this terminal window and open a new one to apply changes."
-echo "=============================================================================="
+
+
+gz sim -v4 -r iris_runway.sdf
+
+
+
+flydrone
+cd ~/drone_project/ardupilot/ArduCopter/
+sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
+
+
+
+bash```
