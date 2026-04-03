@@ -70,13 +70,13 @@ To run the project, two separate terminal processes must be active simultaneousl
 ## Terminal 1: The Simulator (SITL)
 This acts as the virtual drone hardware.
 ```
-source venv/bin/activate
+source drone_env/bin/activate
 dronekit-sitl copter
 ```
 Status: Wait until you see Waiting for connection...
 ## Terminal 2: The Script (The Pilot)
 This runs your logic and communicates with the simulator.
 ```
-source venv/bin/activate
+source drone_env/bin/activate
 python3 hello_drone.py
 ```
