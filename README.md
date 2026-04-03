@@ -64,20 +64,15 @@ gedit ~/.bashrc
 ```
 Add these lines to the very bottom of the file:
 
-#### ArduPilot SITL Path
 ```bash
+# ArduPilot SITL Path
 export PATH=$PATH:$HOME/drone_project/ardupilot/Tools/autotest
-```
 
-
-#### Gazebo Plugin & Models Paths
-```bash
+# Gazebo Plugin & Models Paths
 export GZ_SIM_SYSTEM_PLUGIN_PATH=$HOME/drone_project/ardupilot_gazebo/build:${GZ_SIM_SYSTEM_PLUGIN_PATH}
 export GZ_SIM_RESOURCE_PATH=$HOME/drone_project/ardupilot_gazebo/models:$HOME/drone_project/ardupilot_gazebo/worlds:${GZ_SIM_RESOURCE_PATH}
-```
 
-#### Global alias to activate the Python environment
-```bash
+# Global alias to activate the Python environment
 alias flydrone='source ~/drone_project/drone_env/bin/activate'
 ```
 Apply the changes to your current terminal:
